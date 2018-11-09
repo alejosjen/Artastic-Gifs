@@ -1,38 +1,69 @@
 // API to Giphy: uuAMa4TeItKBBDdRzNb2adG75qTgblof, not a production key
 //https://api.giphy.com/v1/gifs/search?api_key=uuAMa4TeItKBBDdRzNb2adG75qTgblof&q=art&limit=10&offset=0&rating=G&lang=en
+document.addEventListener('DOMContentLoaded', function () {
+    function clear() {
+        $(".search-results").empty()
+    }
+
+    clear();
+
+    $(function () {
+        var topics = ["fine-arts", "architecture", "color", "comics", "sculpture", "painting", "ceramics", "drawing", "watercolor", "chalk-drawing", "abstract-art", "landscape", "photography", "still-life", "mixing-paint", "street-art", "nature-art", "mosaic-art"];
+
+        $.each(topics, function (index, value) {
+            $(".search-terms").append('<button type="button" class="topic-button btn btn-dark btn-sm m-1">' + value + '</button>');
+            console.log(value);
+        });
 
 
-$(function () {
-    var topics = ["art", "art-history", "fine-arts", "architecture", "color", "comics", "modern-art", "sculpture", "painting", "ceramics", "drawing", "watercolor", "chalk-drawing", "abstract-art", "landscape", "photography", "still-life", "mixing-paint", "street-art", "nature-art", "mosaic-art"];
+        var apiKey = "uuAMa4TeItKBBDdRzNb2adG75qTgblof"
+        $('.topic-button').on("click", function () {
+            var searchTerm = $(this).text();
+            var url = "https://api.giphy.com/v1/gifs/search?" +
+                `api_key=${apiKey}` +
+                `&q=${searchTerm}` +
+                `&limit=10` +
+                `&rating=G` +
+                `&lang=en`;
 
-    $.each(topics, function (index, value) {
-        $(".search-terms").append('<button type="button" class="topic-button btn btn-dark btn-sm m-1">' + value + '</button>');
-        console.log(value);
-    });
-})
+            $.ajax({
+                url: url,
+                method: "GET",
+            }).then(function (response) {
+                console.log(response);
+                clear();
 
-var apiKey = "uuAMa4TeItKBBDdRzNb2adG75qTgblof"
-$(document).ready(function () {
-    $('button').on("click", function () {
-        var searchTerm = $(this).text();
-        var url = "https://api.giphy.com/v1/gifs/search?" +
-            `api_key=${apiKey}` +
-            `&q=${searchTerm}` +
-            `&limit=10` +
-            `&rating=G`+
-            `&lang=en`;
+                response.data.forEach(function (data, index) {
+                    var imageStill = response.data[index].images.original_still.url;
+                    var imageOriginal = response.data[index].images.original.url;
+                    var imgResult = $(`
+                        <div class = "imageResult">
+                            <img class="gif" src="${imageStill}" alt="Static Image" data-src="${imageOriginal}"/>
+                            Rating G
+                        </div>
+                    `)
+                    var img = imgResult.find('.gif')
 
-        $.ajax({
-            url: url,
-            method: "GET",
-        }).then(function (response) {
-            console.log(response);
-            $(".search-results").text(JSON.stringify(response));
+                    imgResult.appendTo(".search-results");
+
+                    img.on("click", function() {
+                        if (img.attr('src') == imageStill) {
+                            img.attr('src', imageOriginal)
+                        } else if (img.attr('src') == imageOriginal) {
+                            img.attr('src', imageStill)
+                        }
+
+                    })
+
+                    
+
+
+                })
+
+            })
+
+
         })
     });
+
 })
-
-
-
-
-
