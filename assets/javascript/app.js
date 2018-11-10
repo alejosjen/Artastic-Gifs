@@ -1,5 +1,7 @@
 // API to Giphy: uuAMa4TeItKBBDdRzNb2adG75qTgblof, not a production key
 //https://api.giphy.com/v1/gifs/search?api_key=uuAMa4TeItKBBDdRzNb2adG75qTgblof&q=art&limit=10&offset=0&rating=G&lang=en
+var topics = ["fine-arts", "architecture", "color", "comics", "sculpture", "painting", "ceramics", "drawing", "watercolor", "chalk-drawing", "abstract-art", "landscape", "photography", "still-life", "mixing-paint", "street-art", "nature-art", "mosaic-art"];
+
 document.addEventListener('DOMContentLoaded', function () {
     function clear() {
         $(".search-results").empty()
@@ -8,23 +10,40 @@ document.addEventListener('DOMContentLoaded', function () {
     clear();
 
     $(function () {
-
-        function createButtons (){
-           var topics = ["fine-arts", "architecture", "color", "comics", "sculpture", "painting", "ceramics", "drawing", "watercolor", "chalk-drawing", "abstract-art", "landscape", "photography", "still-life", "mixing-paint", "street-art", "nature-art", "mosaic-art"];
-
-        $.each(topics, function (index, value) {
-            $(".search-terms").append('<button type="button" class="topic-button btn btn-dark btn-sm m-1">' + value + '</button>');
-            console.log(value);
-        }); 
+        function createButtons() {
+            $.each(topics, function (index, value) {
+                $(".search-terms").append('<button type="button" class="topic-button btn btn-dark btn-sm m-1">' + value + '</button>');
+                console.log(value);
+            });
         }
-        
+
+        $('form').keypress(function (event) {
+            return event.keyCode != 13;
+        });
+
         createButtons();
 
 
-        
+        $('#submit').on('click', function (event) {
+            $(".search-terms").empty()
+            var submitButton = $('#art-input').val()
+
+            if (topics.indexOf(submitButton) === -1) {
+                topics.push(submitButton);
+            } else {
+                alert('Term exists.');
+            }
+
+            createButtons();
+            
+
+/*             event.preventDefault();
+ */            console.log(topics);
+        });
 
         var apiKey = "uuAMa4TeItKBBDdRzNb2adG75qTgblof"
-        $('.topic-button').on("click", function () {
+        $(document).on("click", '.topic-button', function (event) {
+
             var searchTerm = $(this).text();
             var url = "https://api.giphy.com/v1/gifs/search?" +
                 `api_key=${apiKey}` +
@@ -63,7 +82,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 });
             });
-        });
+/*         event.preventDefault();
+ */        });
 
     });
 });
