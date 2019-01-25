@@ -13,5 +13,7 @@ Input validations:
 The enter key had to be disabled in the user input area because it kept refreshing the page and adding to the array without creating a button. An alert is created if a user forgets and tries to duplicate search terms.
 
 Thanks for reading, any kind comments and suggestions are always welcome.
+
 Jennifer Alejos
+
 [Website](https://www.jenalejos.com/)
